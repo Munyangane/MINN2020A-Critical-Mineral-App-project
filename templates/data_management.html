@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Management - Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003366, #0099cc);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            text-align: center;
+            background: rgba(255, 193, 7, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ffcc00;
+        }
+        .data-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(6px);
+        }
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .country-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffcc00;
+        }
+        .country-name {
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background: #ffcc00;
+            color: #003366;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #ffd700;
+        }
+        .view-btn {
+            background: #4ecdc4;
+        }
+        .view-btn:hover {
+            background: #45b7d1;
+        }
+        .nav {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .alert {
+            background: rgba(255, 193, 7, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffcc00;
+        }
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">🏠 Home</a>
+            <a href="/admin">👑 Admin Panel</a>
+            <a href="/admin/data">📊 Data Management</a>
+            <a href="/admin/users">👥 User Management</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+
+        <div class="admin-header">
+            <h1>📊 Data Management</h1>
+            <p>Administrator control for all system data</p>
+        </div>
+
+        <div class="alert">
+            <strong>💡 Admin Tip:</strong> Click "Edit" to modify country data. Click "View" to see the public profile.
+        </div>
+
+        <div class="data-section">
+            <h2>🌍 Country Data Management</h2>
+            <p>Edit country profiles, economic data, and mining information.</p>
+            
+            <div class="countries-grid">
+                {% for country in countries %}
+                <div class="country-card">
+                    <h3 class="country-name">{{ country.country_name }}</h3>
+                    <p><strong>Country ID:</strong> {{ country.country_id }}</p>
+                    <p><strong>GDP:</strong> ${{ country.gdp_billion_usd }} Billion</p>
+                    <p><strong>Mining Revenue:</strong> ${{ country.mining_revenue_billion_usd }} Billion</p>
+                    <p><strong>Contribution:</strong> {{ "%.1f"|format((country.mining_revenue_billion_usd / country.gdp_billion_usd) * 100) }}% of GDP</p>
+                    <p><strong>Key Projects:</strong> {{ country.key_projects }}</p>
+                    
+                    <div class="action-buttons">
+                        <a href="/countries/{{ country.country_id }}/edit" class="btn">✏️ Edit Data</a>
+                        <a href="/countries/{{ country.country_id }}" class="btn view-btn">👁️ View Profile</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>📈 Quick Actions</h2>
+            <div class="action-buttons">
+                <a href="/countries" class="btn view-btn">🌍 View All Countries</a>
+                <a href="/admin" class="btn">👑 Back to Admin Panel</a>
+                <a href="#" class="btn" style="background: #00cc66;">➕ Add New Country</a>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>📤 Data Export</h2>
+            <p>Export system data for backup or analysis.</p>
+            <div class="action-buttons">
+                <a href="/countries/api/countries" class="btn view-btn" target="_blank">📥 Export JSON Data</a>
+                <a href="#" class="btn view-btn">📊 Export Statistics Report</a>
+                <a href="#" class="btn view-btn">💾 Backup All Data</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add confirmation for critical actions
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.btn');
+            editButtons.forEach(button => {
+                if (button.textContent.includes('Edit')) {
+                    button.addEventListener('click', function(e) {
+                        const countryName = this.closest('.country-card').querySelector('.country-name').textContent;
+                        if (!confirm(`Are you sure you want to edit ${countryName}?`)) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+
+            // Add click tracking for admin actions
+            const actionButtons = document.querySelectorAll('.btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    console.log(`Admin action: ${this.textContent.trim()}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

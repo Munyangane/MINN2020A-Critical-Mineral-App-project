@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{ country.country_name }} - Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003366, #0099cc);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            background: rgba(255, 193, 7, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ffcc00;
+            text-align: center;
+        }
+        .edit-form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffcc00;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            box-sizing: border-box;
+            color: #333;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #ffcc00;
+            color: #003366;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        .nav {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .alert-success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.5);
+        }
+        .alert-error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">🏠 Home</a>
+            <a href="/countries">🌍 Countries</a>
+            <a href="/admin">👑 Admin Panel</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+
+        <div class="admin-header">
+            <h1>✏️ Edit {{ country.country_name }}</h1>
+            <p>Administrator Country Data Management</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="edit-form">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="country_name">Country Name:</label>
+                    <input type="text" id="country_name" name="country_name" value="{{ country.country_name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gdp_billion_usd">GDP (Billion USD):</label>
+                    <input type="number" id="gdp_billion_usd" name="gdp_billion_usd" value="{{ country.gdp_billion_usd }}" step="0.1" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mining_revenue_billion_usd">Mining Revenue (Billion USD):</label>
+                    <input type="number" id="mining_revenue_billion_usd" name="mining_revenue_billion_usd" value="{{ country.mining_revenue_billion_usd }}" step="0.1" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="key_projects">Key Projects:</label>
+                    <textarea id="key_projects" name="key_projects" required>{{ country.key_projects }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <a href="/countries/{{ country.country_id }}" class="btn btn-secondary">❌ Cancel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

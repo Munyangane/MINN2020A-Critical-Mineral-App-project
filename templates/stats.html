@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Statistics - African Critical Minerals</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003366, #0099cc);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(6px);
+        }
+        .stat-number {
+            font-size: 2.5em;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #ddd;
+            margin-top: 8px;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+        }
+        .chart-title {
+            text-align: center;
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">🏠 Home</a>
+            <a href="/minerals">📘 Minerals</a>
+            <a href="/stats">📊 Statistics</a>
+            <a href="/map">🗺️ Map</a>
+            <a href="/countries">🌍 Countries</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+
+        <div class="header">
+            <h1>📊 Production Statistics Dashboard</h1>
+            <p>Interactive charts and analytics for African mineral production</p>
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_countries }}</div>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${{ stats.total_gdp }}B</div>
+                <div class="stat-label">Total GDP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${{ stats.total_mining_revenue }}B</div>
+                <div class="stat-label">Total Mining Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ "%.1f"|format(stats.avg_contribution) }}%</div>
+                <div class="stat-label">Avg Mining Contribution</div>
+            </div>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">GDP vs Mining Revenue Comparison</h3>
+                <canvas id="comparisonChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Revenue Distribution</h3>
+                <canvas id="revenuePieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">Mining Revenue by Country</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Mining Contribution to GDP (%)</h3>
+                <canvas id="contributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get data from the template
+        const countries = [{% for country in countries %}"{{ country.country_name }}",{% endfor %}];
+        const gdp = [{% for country in countries %}{{ country.gdp_billion_usd }},{% endfor %}];
+        const miningRevenue = [{% for country in countries %}{{ country.mining_revenue_billion_usd }},{% endfor %}];
+        const contributions = [{% for country in countries %}{{ (country.mining_revenue_billion_usd / country.gdp_billion_usd * 100)|round(1) }},{% endfor %}];
+
+        // Comparison Chart (GDP vs Mining Revenue)
+        new Chart(document.getElementById('comparisonChart'), {
+            type: 'bar',
+            data: {
+                labels: countries,
+                datasets: [
+                    {
+                        label: 'GDP (Billion USD)',
+                        data: gdp,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Mining Revenue (Billion USD)',
+                        data: miningRevenue,
+                        backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: 'white' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+
+        // Revenue Pie Chart
+        new Chart(document.getElementById('revenuePieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: countries,
+                datasets: [{
+                    data: miningRevenue,
+                    backgroundColor: [
+                        '#ff6b6b',
+                        '#4ecdc4',
+                        '#45b7d1',
+                        '#96ceb4'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: 'white' }
+                    }
+                }
+            }
+        });
+
+        // Revenue Bar Chart
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels: countries,
+                datasets: [{
+                    label: 'Mining Revenue (Billion USD)',
+                    data: miningRevenue,
+                    backgroundColor: '#ffcc00',
+                    borderColor: '#ff9900',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: 'white' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+
+        // Contribution Chart
+        new Chart(document.getElementById('contributionChart'), {
+            type: 'bar',
+            data: {
+                labels: countries,
+                datasets: [{
+                    label: 'Mining Contribution to GDP (%)',
+                    data: contributions,
+                    backgroundColor: '#4ecdc4',
+                    borderColor: '#45b7d1',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: 'white' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

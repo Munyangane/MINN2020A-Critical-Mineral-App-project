@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>African Critical Minerals - Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #003366, #0099cc);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- NAVBAR ---------- */
+    nav {
+      background-color: rgba(0, 0, 0, 0.25);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffcc00;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 48px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #ffcc00;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+
+    /* ---------- SUBTITLE ---------- */
+    header + .subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 10px;
+      color: #ffffffcc;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- WELCOME MESSAGE ---------- */
+    .welcome {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ---------- DASHBOARD CARDS ---------- */
+    .dashboard {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      margin-top: 40px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      width: 260px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s, background 0.3s;
+      backdrop-filter: blur(6px);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .card a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      display: block;
+    }
+
+    .card a:hover {
+      color: #ffcc00;
+    }
+
+    .card p {
+      margin: 8px 0 0 0;
+      font-size: 12px;
+      color: #ddd;
+    }
+
+    /* ---------- ROLE-SPECIFIC STYLES ---------- */
+    .admin-card {
+      border: 2px solid #ffcc00;
+      background: rgba(255, 204, 0, 0.1) !important;
+    }
+
+    .investor-card {
+      border: 2px solid #00cc66;
+      background: rgba(0, 204, 102, 0.1) !important;
+    }
+
+    .researcher-card {
+      border: 2px solid #0099ff;
+      background: rgba(0, 153, 255, 0.1) !important;
+    }
+
+    .admin-text { color: #ffcc00; }
+    .investor-text { color: #00cc66; }
+    .researcher-text { color: #0099ff; }
+
+    /* ---------- PERMISSIONS CARD ---------- */
+    .permissions-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 25px auto;
+      max-width: 600px;
+      backdrop-filter: blur(6px);
+    }
+
+    .permissions-card h4 {
+      margin: 0 0 15px 0;
+      text-align: center;
+      font-size: 1.3em;
+    }
+
+    .permissions-card p {
+      margin: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .permissions-card p:before {
+      content: "✅";
+      position: absolute;
+      left: 0;
+    }
+
+    /* ---------- LOGOUT SECTION ---------- */
+    .logout {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .logout a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .logout a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 15px;
+      background-color: rgba(0,0,0,0.2);
+      font-size: 14px;
+      color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION BAR -->
+  <nav>
+    <a href="{{ url_for('home.home') }}">🏠 Home</a>
+    <a href="{{ url_for('minerals.index') }}">📘 Minerals</a>
+    <a href="{{ url_for('stats.stats_dashboard') }}">📊 Statistics</a>
+    <a href="{{ url_for('map.map_dashboard') }}">🗺️ Map</a>
+    <a href="/countries">🌍 Countries</a>
+    
+    <!-- ROLE INDICATORS -->
+    {% if userrole == 'Administrator' %}
+    <a href="/admin" class="admin-text" style="font-weight: bold;">👑 Admin Panel</a>
+    {% elif userrole == 'Investor' %}
+    <span class="investor-text" style="font-weight: bold;">💼 Investor Access</span>
+    {% elif userrole == 'Researcher' %}
+    <span class="researcher-text" style="font-weight: bold;">🔬 Researcher Access</span>
+    {% endif %}
+    
+    <a href="{{ url_for('auth.auth_logout') }}">🚪 Logout</a>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header>🌍 AFRICAN CRITICAL MINERALS APP</header>
+  <div class="subtitle">Your Dashboard for African Mineral Data</div>
+
+  <!-- WELCOME MESSAGE WITH ROLE VISUALS -->
+  <div class="welcome">
+    <h2>Welcome, {{ username }}!</h2>
+    <p>You are logged in as 
+        <strong class="{% if userrole == 'Administrator' %}admin-text{% elif userrole == 'Investor' %}investor-text{% else %}researcher-text{% endif %}" style="font-size: 1.2em;">
+            {% if userrole == 'Administrator' %}
+            👑 {{ userrole }}
+            {% elif userrole == 'Investor' %}
+            💼 {{ userrole }}
+            {% else %}
+            🔬 {{ userrole }}
+            {% endif %}
+        </strong>
+    </p>
+    
+    <!-- VISUAL PERMISSIONS DISPLAY -->
+    <div class="permissions-card" style="border-left: 6px solid 
+        {% if userrole == 'Administrator' %}#ffcc00
+        {% elif userrole == 'Investor' %}#00cc66
+        {% else %}#0099ff
+        {% endif %};">
+        <h4 style="color: {% if userrole == 'Administrator' %}#ffcc00
+        {% elif userrole == 'Investor' %}#00cc66
+        {% else %}#0099ff
+        {% endif %};">
+            Your Access Level
+        </h4>
+        
+        {% if userrole == 'Administrator' %}
+        <p>Full system administrative access</p>
+        <p>Manage users and system settings</p>
+        <p>Edit and delete all data content</p>
+        <p>Access all analytics and reports</p>
+        <p>System configuration and monitoring</p>
+        {% elif userrole == 'Investor' %}
+        <p>View detailed country profiles</p>
+        <p>Access production charts and analytics</p>
+        <p>Export financial and production data</p>
+        <p>Investment opportunity analysis</p>
+        <p>Market trend visualization</p>
+        {% else %}
+        <p>View comprehensive mineral database</p>
+        <p>Access country research data</p>
+        <p>Export datasets for analysis</p>
+        <p>Add research notes and insights</p>
+        <p>Academic research tools</p>
+        {% endif %}
+    </div>
+  </div>
+
+  <!-- DASHBOARD CARDS WITH ROLE-BASED FEATURES -->
+  <div class="dashboard">
+    <!-- CORE FEATURES (All Roles) -->
+    <div class="card">
+      <a href="{{ url_for('minerals.index') }}">📘 Minerals Database</a>
+      <p>Browse critical mineral data</p>
+    </div>
+    <div class="card">
+      <a href="{{ url_for('stats.stats_dashboard') }}">📊 Production Statistics</a>
+      <p>Analytics and charts</p>
+    </div>
+    <div class="card">
+      <a href="{{ url_for('map.map_dashboard') }}">🗺️ Mineral Map</a>
+      <p>Geographical distribution</p>
+    </div>
+    <div class="card">
+      <a href="/countries">🌍 Country Profiles</a>
+      <p>National mining data</p>
+    </div>
+    
+    <!-- ADMIN ONLY FEATURES -->
+    {% if userrole == 'Administrator' %}
+    <div class="card admin-card">
+      <a href="/admin" class="admin-text">👑 Admin Panel</a>
+      <p class="admin-text">System management</p>
+    </div>
+    <div class="card admin-card">
+      <a href="/countries/1/edit" class="admin-text">✏️ Data Management</a>
+      <p class="admin-text">Edit all content</p>
+    </div>
+    <div class="card admin-card">
+      <a href="/admin/users" class="admin-text">👥 User Management</a>
+      <p class="admin-text">Manage user accounts</p>
+    </div>
+    {% endif %}
+    
+    <!-- INVESTOR ONLY FEATURES -->
+    {% if userrole == 'Investor' %}
+    <div class="card investor-card">
+      <a href="{{ url_for('stats.stats_dashboard') }}" class="investor-text">💼 Investment Reports</a>
+      <p class="investor-text">Revenue analytics</p>
+    </div>
+    <div class="card investor-card">
+      <a href="/countries" class="investor-text">📈 Market Analysis</a>
+      <p class="investor-text">Opportunity assessment</p>
+    </div>
+    <div class="card investor-card">
+      <a href="{{ url_for('stats.production_data') }}" class="investor-text">💸 Export Data</a>
+      <p class="investor-text">Financial exports</p>
+    </div>
+    {% endif %}
+    
+    <!-- RESEARCHER ONLY FEATURES -->
+    {% if userrole == 'Researcher' %}
+    <div class="card researcher-card">
+      <a href="{{ url_for('minerals.index') }}" class="researcher-text">🔬 Research Portal</a>
+      <p class="researcher-text">Academic resources</p>
+    </div>
+    <div class="card researcher-card">
+      <a href="/countries" class="researcher-text">📚 Data Analysis</a>
+      <p class="researcher-text">Research datasets</p>
+    </div>
+    <div class="card researcher-card">
+      <a href="#" class="researcher-text">🧪 Add Insights</a>
+      <p class="researcher-text">Contribute research</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- LOGOUT SECTION -->
+  <div class="logout">
+    <a href="{{ url_for('auth.auth_logout') }}">🚪 Logout</a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 African Critical Minerals App
+  </footer>
+
+</body>
+</html>

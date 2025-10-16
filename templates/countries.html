@@ -1,0 +1,49 @@
+<div class="countries-grid">
+    {% for country in countries %}
+    <div class="country-card">
+        <h2 class="country-name">{{ country.country_name }}</h2>
+        <div class="country-stats">
+            <div class="stat-item">
+                <span class="stat-label">GDP:</span>
+                <span class="stat-value">${{ country.gdp_billion_usd }} Billion</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Mining Revenue:</span>
+                <span class="stat-value">${{ country.mining_revenue_billion_usd }} Billion</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Mining Contribution:</span>
+                <span class="stat-value">{{ "%.1f"|format((country.mining_revenue_billion_usd / country.gdp_billion_usd) * 100) }}% of GDP</span>
+            </div>
+        </div>
+        <div class="key-projects">
+            <strong>Key Projects:</strong><br>
+            {{ country.key_projects }}
+        </div>
+        
+        <!-- ROLE-BASED ACTIONS -->
+        <div style="margin-top: 15px;">
+            <a href="/countries/{{ country.country_id }}" class="btn">View Full Profile</a>
+            
+            {% if session.role == 'Administrator' %}
+            <a href="/countries/{{ country.country_id }}/edit" 
+               style="background: #ffcc00; color: #003366; text-decoration: none; padding: 8px 15px; border-radius: 5px; margin-left: 10px; font-size: 14px;">
+                ✏️ Edit
+            </a>
+            {% endif %}
+            
+            {% if session.role == 'Investor' %}
+            <div style="margin-top: 10px; padding: 8px; background: rgba(0, 204, 102, 0.2); border-radius: 5px; font-size: 12px;">
+                💼 <strong>Investment Opportunity:</strong> {{ country.mining_revenue_billion_usd }}B revenue
+            </div>
+            {% endif %}
+            
+            {% if session.role == 'Researcher' %}
+            <div style="margin-top: 10px; padding: 8px; background: rgba(0, 153, 255, 0.2); border-radius: 5px; font-size: 12px;">
+                🔬 <strong>Research Data:</strong> {{ "%.1f"|format((country.mining_revenue_billion_usd / country.gdp_billion_usd) * 100) }}% GDP contribution
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ country.country_name }} - African Mineral Data</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003366, #0099cc);
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 204, 0, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .header h1 {
+            font-size: 3em;
+            margin: 0;
+            background: linear-gradient(45deg, #ffcc00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+        .nav {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        .nav a:hover {
+            color: #ffcc00;
+            background: rgba(255, 204, 0, 0.1);
+        }
+        .profile-content {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15), rgba(255, 153, 0, 0.1));
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .stat-card:hover::before {
+            left: 100%;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        .stat-value {
+            font-size: 3em;
+            color: #ffcc00;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            color: #ddd;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #ffcc00;
+            backdrop-filter: blur(10px);
+        }
+        .section h2 {
+            color: #ffcc00;
+            margin-top: 0;
+            border-bottom: 2px solid rgba(255, 204, 0, 0.3);
+            padding-bottom: 15px;
+            font-size: 1.8em;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ffcc00, #ffaa00);
+            color: #003366;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+            background: linear-gradient(135deg, #ffd700, #ffbb00);
+        }
+        .contribution-chart {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(69, 183, 209, 0.1));
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+        .chart-bar {
+            background: linear-gradient(90deg, #ffcc00, #ffaa00);
+            height: 30px;
+            border-radius: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(255, 204, 0, 0.3);
+        }
+        .chart-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .admin-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .mineral-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">🏠 Home</a>
+            <a href="/countries">🌍 All Countries</a>
+            <a href="/minerals">📘 Minerals</a>
+            <a href="/stats">📊 Statistics</a>
+            <a href="/map">🗺️ Map</a>
+            {% if session.role == 'Administrator' %}
+            <span class="admin-badge">👑 ADMIN</span>
+            {% endif %}
+            <a href="/logout" style="margin-left: auto; background: rgba(255, 100, 100, 0.2);">🚪 Logout</a>
+        </div>
+
+        <div class="header">
+            <h1>🌍 {{ country.country_name }}</h1>
+            <p>Comprehensive Mineral Production & Economic Profile</p>
+            <div style="margin-top: 15px;">
+                <span style="background: rgba(255, 204, 0, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 0.9em;">
+                    📊 Your Dashboard for African Mineral Data
+                </span>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">${{ country.gdp_billion_usd }}B</div>
+                    <div class="stat-label">Total GDP</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #aaa;">
+                        National Economic Output
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${{ country.mining_revenue_billion_usd }}B</div>
+                    <div class="stat-label">Mining Revenue</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #aaa;">
+                        Annual Mineral Production
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ "%.1f"|format(mining_contribution) }}%</div>
+                    <div class="stat-label">GDP Contribution</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #aaa;">
+                        Mining Sector Impact
+                    </div>
+                </div>
+            </div>
+
+            <div class="contribution-chart">
+                <h3>📈 Mining Contribution to National Economy</h3>
+                <div class="chart-bar" style="width: {{ mining_contribution }}%; max-width: 100%;"></div>
+                <div style="display: flex; justify-content: space-between; color: #ddd; font-size: 0.9em;">
+                    <span>0%</span>
+                    <span>{{ "%.1f"|format(mining_contribution) }}% of GDP from Mining</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💰 Economic Impact Analysis</h2>
+                <p>The mining sector contributes approximately <strong style="color: #ffcc00;">{{ "%.1f"|format(mining_contribution) }}%</strong> to the country's GDP, highlighting its <strong>significant role</strong> in the national economy and development strategy.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div style="background: rgba(0, 204, 102, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #00cc66;">
+                        <strong>💼 Economic Significance</strong>
+                        <p style="margin: 10px 0 0 0; font-size: 0.9em;">
+                            Major contributor to national revenue and foreign exchange earnings
+                        </p>
+                    </div>
+                    <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ff6b6b;">
+                        <strong>🌱 Development Potential</strong>
+                        <p style="margin: 10px 0 0 0; font-size: 0.9em;">
+                            Opportunities for infrastructure and community development
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏭 Key Mining Projects & Operations</h2>
+                <div style="background: rgba(255, 204, 0, 0.1); padding: 20px; border-radius: 10px; border: 1px solid rgba(255, 204, 0, 0.3);">
+                    <p style="margin: 0; font-size: 1.1em; line-height: 1.6;">
+                        <span class="mineral-icon">⚒️</span>
+                        {{ country.key_projects }}
+                    </p>
+                </div>
+            </div>
+
+            {% if session.role == 'Administrator' %}
+            <div class="section" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(238, 90, 82, 0.1)); border-left: 5px solid #ff6b6b;">
+                <h2>👑 Administrator Tools</h2>
+                <p>You have full access to modify this country's data.</p>
+                <a href="/countries/{{ country.country_id }}/edit" class="back-btn" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                    ✏️ Edit Country Data
+                </a>
+            </div>
+            {% endif %}
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="/countries" class="back-btn">
+                    ← Back to All Countries
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
