@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit {{ country.country_name }}</title>
+    <title>Add New Country</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -101,7 +101,7 @@
             <a href="/admin">👑 Admin Panel</a>
         </div>
 
-        <h1>✏️ Edit {{ country.country_name }}</h1>
+        <h1>➕ Add New Country</h1>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -113,29 +113,29 @@
             {% endif %}
         {% endwith %}
 
-        <form action="/countries/{{ country.country_id }}/update" method="POST">
+        <form action="/countries/create" method="POST">
             <div class="form-group">
                 <label for="country_name">Country Name:</label>
-                <input type="text" id="country_name" name="country_name" value="{{ country.country_name }}" required>
+                <input type="text" id="country_name" name="country_name" required>
             </div>
             
             <div class="form-group">
                 <label for="gdp">GDP (Billion USD):</label>
-                <input type="number" id="gdp" name="gdp" step="0.1" value="{{ country.gdp_billion_usd }}" required>
+                <input type="number" id="gdp" name="gdp" step="0.1" required>
             </div>
             
             <div class="form-group">
                 <label for="mining_revenue">Mining Revenue (Billion USD):</label>
-                <input type="number" id="mining_revenue" name="mining_revenue" step="0.1" value="{{ country.mining_revenue_billion_usd }}" required>
+                <input type="number" id="mining_revenue" name="mining_revenue" step="0.1" required>
             </div>
             
             <div class="form-group">
                 <label for="key_projects">Key Projects:</label>
-                <textarea id="key_projects" name="key_projects" rows="4">{{ country.key_projects }}</textarea>
+                <textarea id="key_projects" name="key_projects" rows="4" placeholder="Describe key mining projects..."></textarea>
             </div>
             
             <div>
-                <button type="submit" class="btn">💾 Save Changes</button>
+                <button type="submit" class="btn">➕ Add Country</button>
                 <a href="/admin/data" class="btn btn-cancel">❌ Cancel</a>
             </div>
         </form>
